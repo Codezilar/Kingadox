@@ -2292,7 +2292,7 @@ footer{
 
   .sidebar-container{
     width: 60%;
-    left: -15rem;
+    left: -20rem;
     transition: 0.5s ease-in-out;
   }
 }
