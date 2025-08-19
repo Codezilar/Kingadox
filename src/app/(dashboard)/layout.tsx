@@ -18,6 +18,7 @@ const RootLayout = ({children}:{children: ReactNode}) => {
   const [activeNav, setactiveNav] = useState(false)
   const toggle = () =>{
     setactiveNav(!activeNav);
+
   }
   return (
     <main className="dasss">

@@ -15,7 +15,7 @@ import { UserButton } from '@clerk/nextjs';
 
 const Sidebar = ({ activeNav }: { activeNav: boolean }) => {
   return (
-    <div className={`sidebar ${activeNav == true ? "activeNav" : ""}`}>
+    <div className={`sidebar ${activeNav == true ? "activeNav" : "inactiveNav"}`}>
         <div className="sidebar-container">
             <div className="side-top">
                 <span className="theme-gradient">
