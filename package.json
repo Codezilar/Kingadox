@@ -10,7 +10,7 @@
     "build:with-lint": "next build"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.31.2",
+    "@clerk/nextjs": "^6.31.3",
     "@react-three/drei": "^10.6.1",
     "@react-three/fiber": "^9.0.0-alpha.8",
     "@tabler/icons-react": "^3.34.1",
