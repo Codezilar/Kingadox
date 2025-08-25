@@ -118,10 +118,9 @@ const Page = () => {
     }
   };
 
-  const handleGetStarted = () => router.push('/dashboard');
 
   if (isSuccess) {
-    return <OnboradingSuccess handleGetStarted={handleGetStarted} />;
+    return <OnboradingSuccess />;
   }
 
   return (
