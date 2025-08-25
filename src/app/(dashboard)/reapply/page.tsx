@@ -97,7 +97,6 @@ const ReapplyPage = () => {
     }
   };
 
-  const handleGetStarted = () => router.push('/dashboard');
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: 'idCard' | 'passport') => {
     if (e.target.files && e.target.files[0]) {
