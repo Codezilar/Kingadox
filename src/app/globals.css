@@ -2406,7 +2406,7 @@ footer{
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-
+/* 
 @keyframes blob {
   0% {
     transform: translate(0px, 0px) scale(1);
@@ -2432,4 +2432,4 @@ footer{
 
 .animation-delay-4000 {
   animation-delay: 4s;
-}
+} */
