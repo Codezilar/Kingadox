@@ -2,26 +2,30 @@
 
 import { CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useCallback, useState } from "react";
 
 const OnboardingSuccess = () => {
   const router = useRouter();
+  const [isNavigating, setIsNavigating] = useState(false);
 
-  const handleGetStarted = () => {
-    // This could contain analytics tracking or other logic
-    console.log("User is proceeding to dashboard");
-    // You can add any additional logic here
-  };
-
-  const handleClick = () => {
-    handleGetStarted();
-    router.push('/dashboard');
-  };
+  const handleClick = useCallback(async () => {
+    if (isNavigating) return;
+    
+    setIsNavigating(true);
+    try {
+      // Analytics or other logic
+      console.log("User is proceeding to dashboard");
+      router.push('/dashboard');
+    } catch (error) {
+      console.error("Navigation failed:", error);
+      setIsNavigating(false);
+    }
+  }, [router, isNavigating]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center bg-gradient-to-br from-slate-900 to-blue-950 relative overflow-hidden">
-      {/* Blue glow effect across UI */}
+      {/* Blue glow effect */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute top-0 left-0 w-64 h-64 bg-blue-500 rounded-full mix-blend-soft-light filter blur-xl opacity-20 animate-blob" />
         <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600 rounded-full mix-blend-soft-light filter blur-xl opacity-20 animate-blob animation-delay-2000" />
@@ -47,9 +51,10 @@ const OnboardingSuccess = () => {
       
       <button 
         onClick={handleClick}
-        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
+        disabled={isNavigating}
+        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium rounded-lg transition-colors duration-200"
       >
-        Continue to Dashboard
+        {isNavigating ? "Loading..." : "Continue to Dashboard"}
       </button>
     </div>
   );
