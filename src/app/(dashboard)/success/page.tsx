@@ -1,8 +1,12 @@
 import OnboardingSuccess from '@/component/Success'
 import React from 'react'
 
-const Page = () => {
-  return <OnboardingSuccess />
+const page = () => {
+  return (
+    <>
+        <OnboardingSuccess />
+    </>
+  )
 }
 
-export default Page
+export default page
