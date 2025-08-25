@@ -1,12 +1,16 @@
 import OnboardingSuccess from '@/component/Success'
 import React from 'react'
 
-const page = () => {
+const Page = () => {
+  // Define the handler function
+  const handleGetStarted = () => {
+    // This could contain analytics tracking or other logic
+    console.log("User is proceeding to dashboard");
+  };
+
   return (
-    <>
-        <OnboardingSuccess />
-    </>
+    <OnboardingSuccess handleGetStarted={handleGetStarted} />
   )
 }
 
-export default page
+export default Page
