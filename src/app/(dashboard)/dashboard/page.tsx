@@ -27,7 +27,7 @@ const page = () => {
   return (
     <div className='dashboard'>
         <div className="tf_Information">
-            <h2>Transaction Processing:</h2>
+            <h2>Withdrawal request processing:</h2>
             <ul>
                 <li>ACH transfers have a $15 network fee and take 1-3 business days</li>
             </ul>
