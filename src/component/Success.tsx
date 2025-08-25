@@ -3,12 +3,22 @@
 import { CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-interface OnboardingSuccessProps {
-  handleGetStarted: () => void;
-}
+const OnboardingSuccess = () => {
+  const router = useRouter();
 
-const OnboardingSuccess = ({ handleGetStarted }: OnboardingSuccessProps) => {
+  const handleGetStarted = () => {
+    // This could contain analytics tracking or other logic
+    console.log("User is proceeding to dashboard");
+    // You can add any additional logic here
+  };
+
+  const handleClick = () => {
+    handleGetStarted();
+    router.push('/dashboard');
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center bg-gradient-to-br from-slate-900 to-blue-950 relative overflow-hidden">
       {/* Blue glow effect across UI */}
@@ -32,42 +42,15 @@ const OnboardingSuccess = ({ handleGetStarted }: OnboardingSuccessProps) => {
       </h2>
       
       <p className="text-blue-100 mb-8 max-w-md relative z-10">
-        Your consistency profile is ready. Let's build your personalized plan.
+        Your consistency profile is ready. Let&apos;s build your personalized plan.
       </p>
-      <Link href={'/dashboard'}>
-        <button 
-          onClick={handleGetStarted}
-          className="success_btn"
-          >
-          Continue to Dashboard
-        </button>
-      </Link>
       
-      <style jsx>{`
-        @keyframes blob {
-          0% {
-            transform: translate(0px, 0px) scale(1);
-          }
-          33% {
-            transform: translate(30px, -50px) scale(1.1);
-          }
-          66% {
-            transform: translate(-20px, 20px) scale(0.9);
-          }
-          100% {
-            transform: translate(0px, 0px) scale(1);
-          }
-        }
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-      `}</style>
+      <button 
+        onClick={handleClick}
+        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
+      >
+        Continue to Dashboard
+      </button>
     </div>
   );
 };
