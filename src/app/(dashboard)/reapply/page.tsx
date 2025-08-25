@@ -114,7 +114,7 @@ const ReapplyPage = () => {
   }
 
   if (isSuccess) {
-    return <OnboradingSuccess handleGetStarted={handleGetStarted} />;
+    return <OnboradingSuccess />;
   }
 
   return (
