@@ -99,23 +99,29 @@ export async function PUT(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error('KYC reapplication error:', error);
-    
-    if (error.name === 'ValidationError') {
-      const validationErrors = Object.values(error.errors).map((e: any) => ({
-        field: e.path,
-        message: e.message,
-        value: e.value
-      }));
-      console.error('MongoDB Validation errors:', validationErrors);
+    if (error instanceof Error && 'name' in error && error.name === 'ValidationError') {
+      console.error('KYC reapplication error:', error);
+
+      // Type assertion for MongoDB validation error
+      const mongoError = error as any;
       
-      return NextResponse.json(
-        { 
-          error: "Validation Failed", 
-          details: validationErrors 
-        }, 
-        { status: 400 }
-      );
+      if (mongoError.errors && typeof mongoError.errors === 'object') {
+        const validationErrors = Object.values(mongoError.errors).map((e: any) => ({
+          field: e.path,
+          message: e.message,
+          value: e.value
+        }));
+        
+        console.error('MongoDB Validation errors:', validationErrors);
+        
+        return NextResponse.json(
+          { 
+            error: "Validation Failed", 
+            details: validationErrors 
+          }, 
+          { status: 400 }
+        );
+      }
     }
     
     return NextResponse.json(

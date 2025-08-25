@@ -26,15 +26,12 @@ const page = () => {
 
   return (
     <div className='dashboard'>
-                    <div className="tf_Information">
-                        <h2>Withdrawal Information:</h2>
-                        <ul>
-                            <li>ACH transfers have a $15 network fee and take 1-3 business days</li>
-                            <li>Wire transfers have a $25 network fee and are processed same day</li>
-                            <li>Zelle transfers have a $10 network fee and are instant (for participating banks)</li>
-                            <li>All network fees are required for crypto address processing</li>
-                        </ul>
-                    </div>
+        <div className="tf_Information">
+            <h2>Transaction Processing:</h2>
+            <ul>
+                <li>ACH transfers have a $15 network fee and take 1-3 business days</li>
+            </ul>
+        </div>
         <KycBanner />
         <div className="dashboard-container">
             <div className="dash-top">
