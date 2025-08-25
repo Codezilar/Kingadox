@@ -1,18 +1,32 @@
+"use client"
 
 import Image from 'next/image'
-import React from 'react'
-import { IoIosTrendingUp } from "react-icons/io";
-import { CiWallet } from "react-icons/ci";
-import { HiOutlineWallet } from "react-icons/hi2";
-import { FaArrowTrendUp } from "react-icons/fa6";
-import { MdWaterfallChart } from "react-icons/md";
-import { MdContentCopy } from "react-icons/md";
-import { IoNavigateCircleOutline } from "react-icons/io5";
+import React, { useState } from 'react';
+import { MdContentCopy } from 'react-icons/md';
+import { IoNavigateCircleOutline } from 'react-icons/io5';
 import Link from 'next/link';
+import KycBanner from '@/component/KycBanner';
+import UserBalanceCard from '@/component/Balance';
+
+
 
 const page = () => {
+    const [copied, setCopied] = useState(false);
+    const address = 'bc1q4ntnxmz7q5aueygahucc69rz2zpqaaex4dyquz';
+
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(address);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    const viewInExplorer = () => {
+        window.open(`https://blockstream.info/address/${address}`, '_blank');
+    };
+
   return (
     <div className='dashboard'>
+        <KycBanner />
         <div className="dashboard-container">
             <div className="dash-top">
                 <div className="dash-top-left">
@@ -25,56 +39,7 @@ const page = () => {
                 </div>
             </div>
         </div>
-        <div className="card">
-                <div className="card-container card-green">
-                    <div className="card-top">
-                        <div className="card-bal">
-                            <span>
-                                <CiWallet className='text-3xl' />
-                            </span>
-                            <p><IoIosTrendingUp /> 2.3%</p>
-                        </div>
-                        <h1>$8,967</h1>
-                        <p>All accounts combined</p>
-                    </div>
-                </div>
-                <div className="card-container ololol">
-                    <div className="card-top">
-                        <div className="card-bals">
-                            <span>
-                                <HiOutlineWallet />
-                            </span>
-                            <p>Checking Balance</p>
-                        </div>
-                        <h1>$967</h1>
-                        <p>Primary Checking</p>
-                    </div>
-                </div>
-                <div className="card-container ololol">
-                    <div className="card-top">
-                        <div className="card-bals">
-                            <span>
-                                <FaArrowTrendUp />
-                            </span>
-                            <p>Investment Balance</p>
-                        </div>
-                        <h1>$20,967</h1>
-                        <p>Investment Account</p>
-                    </div>
-                </div>
-                <div className="card-container ololol">
-                    <div className="card-top">
-                        <div className="card-bals">
-                            <span>
-                                <MdWaterfallChart />
-                            </span>
-                            <p>Recent Activity</p>
-                        </div>
-                        <h1>$8000</h1>
-                        <p>Last 7 days</p>
-                    </div>
-                </div>
-        </div>
+        <UserBalanceCard />
         <div className="active">
             <div className="active-top">
                 <h2>Activity Overview</h2>
@@ -105,18 +70,22 @@ const page = () => {
                             <p>bc1q4ntnxmz7q5aueygahucc69rz2zpqaaex4dyquz</p>
                         </div>
                         <div className="address-btns">
-                            <button>
+                            <button  onClick={copyToClipboard}>
                                 <MdContentCopy /> <p>Copy Address</p>
                             </button>
-                            <button>
+                            <button onClick={viewInExplorer}>
                                 <IoNavigateCircleOutline /> <p>View Explorer</p>
                             </button>
                         </div>
+                        {copied && (
+                        <div className="copy-notification">
+                            Address copied to clipboard!
+                        </div>
+                        )}
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
   )
 }

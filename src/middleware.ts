@@ -8,6 +8,8 @@ const protectedRoute = createRouteMatcher([
   '/support',
   '/transactions',
   '/transfer',
+  '/kyc',
+  '/kycadmin',
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

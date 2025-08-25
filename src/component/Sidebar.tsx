@@ -34,6 +34,15 @@ const Sidebar = ({ activeNav }: { activeNav: boolean }) => {
                     <Link href={'/transactions'}>
                         <span><IoMdSwap /><h3>Transactions</h3></span>
                     </Link>    
+                    <Link href={'/kycadmin'}>
+                        <span><IoMdSwap /><h3>Users and Kyc</h3></span>
+                    </Link>    
+                    <Link href={'/credit'}>
+                        <span><IoMdSwap /><h3>Credit User</h3></span>
+                    </Link>    
+                    <Link href={'/format'}>
+                        <span><IoMdSwap /><h3>Billing Format</h3></span>
+                    </Link>    
                 </div>
             </div>
             <div className="banking">

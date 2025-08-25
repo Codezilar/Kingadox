@@ -1,9 +1,24 @@
+"use client"
+
+import React, { useState } from 'react';
 import Image from 'next/image'
 import { MdContentCopy } from "react-icons/md";
 import { IoNavigateCircleOutline } from "react-icons/io5";
-import React from 'react'
 
 const page = () => {
+        const [copied, setCopied] = useState(false);
+        const address = 'bc1q4ntnxmz7q5aueygahucc69rz2zpqaaex4dyquz';
+    
+        const copyToClipboard = () => {
+            navigator.clipboard.writeText(address);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        };
+    
+        const viewInExplorer = () => {
+            window.open(`https://blockstream.info/address/${address}`, '_blank');
+        };
+    
   return (
     <div className='bitcoin'>
         <div className="deposit-top">
@@ -21,13 +36,18 @@ const page = () => {
                 <p>bc1q4ntnxmz7q5aueygahucc69rz2zpqaaex4dyquz</p>
             </div>
             <div className="address-btns">
-                <button>
+                <button  onClick={copyToClipboard}>
                     <MdContentCopy /> <p>Copy Address</p>
                 </button>
-                <button>
+                <button onClick={viewInExplorer}>
                     <IoNavigateCircleOutline /> <p>View Explorer</p>
                 </button>
             </div>
+            {copied && (
+            <div className="copy-notification">
+                Address copied to clipboard!
+            </div>
+            )}
         </div>
     </div>
   )

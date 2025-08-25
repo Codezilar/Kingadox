@@ -1346,6 +1346,52 @@ footer{
   border-radius: 12px;
 }
 
+.kyc{
+  display: flex;
+  width: 100%;
+}
+
+.kyc-container{
+  display: flex;
+  width: 100%;
+  background: rgb(35, 25, 25);
+  border: 2px solid rgb(211, 119, 119);
+  border-radius: 10px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+}
+
+.kyc-left{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.kyc-img{
+  border-radius: 10px;
+}
+
+.kyc-content h1{
+  font-weight: 900;
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+
+.kyc-content p{
+  font-weight: 900;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+.kyc-content button{
+  background: rgb(157, 79, 43);
+  padding: 0.3rem 1rem;
+  border-radius: 10px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
 .dash-top{
   display: flex;
   justify-content: space-between;
@@ -1554,6 +1600,7 @@ footer{
   gap: 1rem;
   letter-spacing: 1px;
   border-radius: 10px;
+  cursor: pointer;
 }
 
 
@@ -1569,6 +1616,16 @@ footer{
 
 
 @media (max-width: 769px) {
+  .kyc-left{
+    flex-direction: column-reverse;
+    align-items: start;
+  }
+
+  .kyc-bot{
+    height: 12rem;
+    width: auto;
+  }
+  
   .card{
     grid-template-columns: 1fr 1fr;
     padding: 0rem;
@@ -2314,3 +2371,37 @@ footer{
   }
 }
 
+.success_btn{
+  background: #7eea9b;
+  width: fit-content;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  border-radius: 8px;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  color: #000;
+}
+
+.error_btn{
+  background: rgb(52, 31, 31);
+  width: fit-content;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.copy-notification {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
