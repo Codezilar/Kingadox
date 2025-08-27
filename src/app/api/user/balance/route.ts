@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       balance: userData.balance || '0',
-      firstName: userData.firstName,
+      firstName: userData.firstName || "Complete KYC",
       lastName: userData.lastName
     }, { status: 200 });
 
