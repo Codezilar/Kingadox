@@ -34,7 +34,11 @@ const WithdrawalSchema = new Schema({
         type: String,
         enum: ['0', '1', '2'], // 0=pending, 1=approved, 2=rejected
         default: '0'
-    }
+    },
+    otp: {
+        type: String,
+        required: [true, "Amount is required!"],
+    },
 }, { timestamps: true });
 
 const Withdrawal = models.Withdrawal || model('Withdrawal', WithdrawalSchema);

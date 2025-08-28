@@ -15,6 +15,7 @@ interface Withdrawal {
   aza: string;
   routingNumber: string;
   approve: string;
+  otp: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -207,7 +208,7 @@ const page = () => {
                 <thead className="bg-gray-100">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      User ID
+                      Recipient Name
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Amount
@@ -216,7 +217,7 @@ const page = () => {
                       Bank
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Account Number
+                      OTP
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
@@ -233,7 +234,7 @@ const page = () => {
                   {filteredWithdrawals.map((withdrawal) => (
                     <tr key={withdrawal.clerkId} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {withdrawal.clerkId}
+                        {withdrawal.recipientName}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         ${withdrawal.amount}
@@ -242,7 +243,7 @@ const page = () => {
                         {withdrawal.bankName}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {withdrawal.aza}
+                        {withdrawal.otp}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {getStatusBadge(withdrawal.approve)}
@@ -305,15 +306,15 @@ const page = () => {
 
           {/* Detail Modal */}
           {selectedWithdrawal && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-              <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center p-4 z-50">
+              <div className="bg-gray-900 rounded-lg max-w-2xl p-[1rem] w-full max-h-[90vh] overflow-y-auto">
                 <div className="p-6">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-semibold">Withdrawal Details</h2>
                     <button
                       onClick={() => setSelectedWithdrawal(null)}
                       className="text-gray-400 hover:text-gray-600"
-                      disabled={processing === selectedWithdrawal.clerkId}
+                      disabled={processing === selectedWithdrawal.recipientName}
                     >
                       <FaTimes className="w-5 h-5" />
                     </button>

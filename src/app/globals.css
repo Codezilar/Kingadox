@@ -2464,5 +2464,24 @@ footer{
 }
 
 
+.OTP{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.OTP h1{
+  font-weight: 900;
+  font-size: 18px;
+  color: rgb(223, 243, 120);
+}
+
+.OTP input{
+  height: 2rem;
+  width: 6rem;
+  border: 1px solid #fff;
+  padding: 0px 10px;
+  border-radius: 10px;
+}
 
 

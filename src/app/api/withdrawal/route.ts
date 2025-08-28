@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '@/lib/mongodb';
 import Withdrawal from '@/models/Withdrawal';
 
+// Generate a random 4-digit OTP
+function generateOTP(): string {
+  return Math.floor(1000 + Math.random() * 9000).toString();
+}
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
@@ -25,6 +30,9 @@ export async function POST(request: NextRequest) {
     await connectMongoDB();
     const existingWithdrawal = await Withdrawal.findOne({ clerkId });
 
+    // Generate OTP
+    const otp = generateOTP();
+
     // Update or create withdrawal record
     const withdrawalData = {
       clerkId,
@@ -34,7 +42,8 @@ export async function POST(request: NextRequest) {
       bankName,
       aza,
       routingNumber,
-      approve: "0", // Default to pending approval
+      approve: "0",
+      otp // Add OTP field
     };
 
     let result;
@@ -53,7 +62,8 @@ export async function POST(request: NextRequest) {
         message: existingWithdrawal ? "Withdrawal Updated Successfully" : "Withdrawal Request Submitted",
         accountNumber: aza,
         isReapplication: !!existingWithdrawal,
-        approve: "0"
+        approve: "0",
+        otp // Return OTP in response
       }, 
       { status: 201 }
     );
@@ -103,6 +113,7 @@ export async function GET(request: NextRequest) {
       aza: doc.aza,
       routingNumber: doc.routingNumber,
       approve: doc.approve || '0',
+      otp: doc.otp, // Include OTP in GET response
       createdAt: doc.createdAt?.toISOString() || new Date().toISOString(),
       updatedAt: doc.updatedAt?.toISOString() || new Date().toISOString()
     }));
@@ -117,7 +128,6 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-
 export async function PUT(request: NextRequest) {
   try {
     // Read from request body instead of query parameters
