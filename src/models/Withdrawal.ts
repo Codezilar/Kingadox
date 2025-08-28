@@ -32,7 +32,7 @@ const WithdrawalSchema = new Schema({
     },
     approve: {
         type: String,
-        enum: ['0', '1', '2'], // 0=pending, 1=approved, 2=rejected
+        enum: ['0', '1', '2', '3'], // 0=pending, 1=approved, 2=rejected
         default: '0'
     },
     otp: {

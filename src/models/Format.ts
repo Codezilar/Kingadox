@@ -6,7 +6,7 @@ export interface IFormat extends Document {
   description: string;
   form_id: string;
   approved: boolean;
-  type: 'first' | 'second'; // To distinguish between first and second format
+  type: 'first' | 'second' | 'third'; // To distinguish between first and second format
   createdAt: Date;
   updatedAt: Date;
 }
@@ -34,7 +34,7 @@ const FormatSchema: Schema = new Schema({
   },
   type: {
     type: String,
-    enum: ['first', 'second'],
+    enum: ['first', 'second', 'third'],
     required: true,
   },
 }, {

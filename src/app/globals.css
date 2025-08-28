@@ -1975,6 +1975,10 @@ footer{
   background: #65683b;
 }
 
+.transfer_p-content3 .recipient{
+  margin-top: 5rem;
+}
+
 .tf{
   display: flex;
   justify-content: space-between;

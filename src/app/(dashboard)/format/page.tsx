@@ -14,7 +14,7 @@ interface Format {
   description: string;
   form_id: string;
   approved: boolean;
-  type: 'first' | 'second';
+  type: 'first' | 'second' | 'third'; // Added 'third' type
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -27,9 +27,11 @@ const Page = () => {
   const [formData, setFormData] = useState<{ 
     first: { title: string; description: string; _id?: string };
     second: { title: string; description: string; _id?: string };
+    third: { title: string; description: string; _id?: string }; // Added third format
   }>({
     first: { title: '', description: '', _id: '' },
-    second: { title: '', description: '', _id: '' }
+    second: { title: '', description: '', _id: '' },
+    third: { title: '', description: '', _id: '' } // Added third format
   });
 
   useEffect(() => {
@@ -50,6 +52,7 @@ const Page = () => {
         // Initialize form data with current values from database
         const firstFormat = data.formats?.find((format: Format) => format.type === 'first');
         const secondFormat = data.formats?.find((format: Format) => format.type === 'second');
+        const thirdFormat = data.formats?.find((format: Format) => format.type === 'third'); // Added third format
         
         setFormData({
           first: {
@@ -61,6 +64,11 @@ const Page = () => {
             title: secondFormat?.title || '',
             description: secondFormat?.description || '',
             _id: secondFormat?._id || ''
+          },
+          third: { // Added third format
+            title: thirdFormat?.title || '',
+            description: thirdFormat?.description || '',
+            _id: thirdFormat?._id || ''
           }
         });
       }
@@ -71,7 +79,7 @@ const Page = () => {
     }
   };
 
-  const handleInputChange = (formatType: 'first' | 'second', field: 'title' | 'description', value: string) => {
+  const handleInputChange = (formatType: 'first' | 'second' | 'third', field: 'title' | 'description', value: string) => {
     setFormData(prev => ({
       ...prev,
       [formatType]: {
@@ -81,7 +89,7 @@ const Page = () => {
     }));
   };
 
-  const updateFormat = async (formatType: 'first' | 'second') => {
+  const updateFormat = async (formatType: 'first' | 'second' | 'third') => {
     if (!userId) return;
     
     try {
@@ -238,6 +246,51 @@ const Page = () => {
               }`}
             >
               {updating.second ? 'Updating...' : 'Update Second Format'}
+            </button>
+          </div>
+
+          {/* Third Format - Added this section */}
+          <div className="transfer_p-content transfer_p-content3">
+            <div className="recipient">
+              <span className='flex items-center gap-1.5'>
+                <FiUser /> 
+                <h2>Third Format</h2>
+              </span>
+              <div className="receipt">
+                <div className="receipt-content">
+                  <h3>Title *</h3>
+                  <input 
+                    type="text" 
+                    placeholder='Format title...' 
+                    value={formData.third.title}
+                    onChange={(e) => handleInputChange('third', 'title', e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+              </div>
+              <div className="receipt">
+                <div className="receipt-content">
+                  <h3>Description *</h3>
+                  <textarea 
+                    placeholder='Format Description...' 
+                    value={formData.third.description}
+                    onChange={(e) => handleInputChange('third', 'description', e.target.value)}
+                    rows={4}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+              </div>
+            </div>
+            <button 
+              onClick={() => updateFormat('third')}
+              disabled={updating.third || !formData.third.title || !formData.third.description}
+              className={`px-4 py-2 rounded-md ${
+                updating.third || !formData.third.title || !formData.third.description
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-blue-500 hover:bg-blue-600 text-white'
+              }`}
+            >
+              {updating.third ? 'Updating...' : 'Update Third Format'}
             </button>
           </div>
         </div>

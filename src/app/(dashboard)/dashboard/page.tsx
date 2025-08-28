@@ -8,6 +8,7 @@ import Link from 'next/link';
 import KycBanner from '@/component/KycBanner';
 import UserBalanceCard from '@/component/Balance';
 import { useUser, useAuth } from '@clerk/nextjs'
+import OTPVerification from '@/component/OTPVerification';
 
 
 interface Format {
@@ -91,10 +92,16 @@ const Page = () => {
                 <ul>
                     <li>{formats[1]?.description || "Default description"}</li>
                 </ul>
-                <div className='OTP'>
-                    <h1>Enter OTP</h1>
-                    <input type="number" placeholder='1234' />
-                </div>
+                <OTPVerification clerkId={userId} />
+            </div>
+        )}
+
+        {withdrawal && withdrawal.approve === '3' && formats.length > 1 && (
+            <div className="tf_Information">
+                <h2>{formats[2]?.title || "Default Title"}</h2>
+                <ul>
+                    <li>{formats[2]?.description || "Default description"}</li>
+                </ul>
             </div>
         )}
         
