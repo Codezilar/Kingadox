@@ -7,6 +7,17 @@ export async function GET(request: NextRequest) {
   try {
     await connectMongoDB();
 
+    // Extract clerkId from query parameters
+    const { searchParams } = new URL(request.url);
+    const clerkId = searchParams.get('clerkId');
+    
+    if (!clerkId) {
+      return NextResponse.json({
+        success: false,
+        message: 'clerkId is required'
+      }, { status: 400 });
+    }
+
     // Find withdrawal data for the specific user
     const format = await Format.findOne({ clerkId });
     
