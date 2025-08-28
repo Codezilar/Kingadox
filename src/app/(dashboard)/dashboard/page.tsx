@@ -26,6 +26,7 @@ interface Withdrawal {
   // Other withdrawal properties...
 }
 
+
 const Page = () => {
     const [copied, setCopied] = useState(false);
     const [formats, setFormats] = useState<Format[]>([]);
@@ -92,7 +93,7 @@ const Page = () => {
                 <ul>
                     <li>{formats[1]?.description || "Default description"}</li>
                 </ul>
-                <OTPVerification clerkId={userId} />
+                <OTPVerification clerkId={userId as string} />
             </div>
         )}
 
