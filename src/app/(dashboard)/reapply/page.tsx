@@ -1,33 +1,42 @@
-// app/reapply/page.tsx
 'use client'
 
 import Link from 'next/link'
 import React, { useState, useEffect } from 'react'
-import { FiUser, FiArrowLeft } from "react-icons/fi";
+import { FiUser, FiArrowLeft, FiAlertCircle } from "react-icons/fi";
 import Image from 'next/image';
 import OnboradingSuccess from '@/component/Success';
-import { useUser, useAuth } from '@clerk/nextjs'
+import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
+
+interface KycData {
+  clerkId: string | null;
+  firstName: string;
+  lastName: string;
+  email: string;
+  country: string;
+  state: string;
+  idCardFileName: File | null;
+  passportFileName: File | null;
+}
 
 const ReapplyPage = () => {
   const router = useRouter();
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [existingKyc, setExistingKyc] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { user, isLoaded } = useUser();
+  const userId = user?.id || null;
 
-  const { userId, sessionId } = useAuth();
-  const { user } = useUser();
-
-  const [kyc, setKyc] = useState({
+  const [kyc, setKyc] = useState<KycData>({
     clerkId: userId,
     firstName: '',
     lastName: '',
     email: '',
     country: '',
     state: '',
-    idCard: null as File | null,
-    passport: null as File | null,
+    idCardFileName: null,
+    passportFileName: null,
   });
 
   // Fetch existing KYC data
@@ -36,32 +45,74 @@ const ReapplyPage = () => {
       if (!userId) return;
       
       try {
-        const response = await fetch(`/api/kyc/admin/${userId}`);
+        const response = await fetch(`/api/kyc?clerkId=${userId}`);
         if (response.ok) {
           const data = await response.json();
-          setExistingKyc(data.kyc);
-          setKyc(prev => ({
-            ...prev,
-            firstName: data.kyc.firstName || '',
-            lastName: data.kyc.lastName || '',
-            email: data.kyc.email || '',
-            country: data.kyc.country || '',
-            state: data.kyc.state || '',
-          }));
+          if (data.kyc) {
+            setKyc(prev => ({
+              ...prev,
+              firstName: data.kyc.firstName || '',
+              lastName: data.kyc.lastName || '',
+              email: data.kyc.email || '',
+              country: data.kyc.country || '',
+              state: data.kyc.state || '',
+            }));
+          }
+        } else if (response.status === 404) {
+          setError('No existing KYC record found. Please complete a new KYC application first.');
         }
       } catch (error) {
         console.error('Error fetching KYC data:', error);
+        setError('Failed to load your KYC information. Please try again.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchExistingKyc();
-  }, [userId]);
+    if (isLoaded) {
+      fetchExistingKyc();
+    }
+  }, [userId, isLoaded]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setKyc(prev => ({ ...prev, [name]: value }));
+    setError(null);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, files } = e.target;
+    if (files && files[0]) {
+      const file = files[0];
+      const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+      const maxSize = 10 * 1024 * 1024; // 10MB
+
+      if (!validTypes.includes(file.type)) {
+        setError('Please upload JPEG, PNG, or PDF files only');
+        return;
+      }
+
+      if (file.size > maxSize) {
+        setError('File size must be less than 10MB');
+        return;
+      }
+
+      setKyc(prev => ({ ...prev, [name]: file }));
+      setError(null);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate required fields
+    if (!kyc.country || !kyc.state) {
+      setError('Please fill in all required fields');
+      return;
+    }
+
     setIsSubmitting(true);
+    setError(null);
 
     try {
       const formData = new FormData();
@@ -71,13 +122,20 @@ const ReapplyPage = () => {
       formData.append('email', kyc.email);
       formData.append('country', kyc.country);
       formData.append('state', kyc.state);
-      if (kyc.idCard) formData.append('idCard', kyc.idCard);
-      if (kyc.passport) formData.append('passport', kyc.passport);
+      
+      if (kyc.idCardFileName) {
+        formData.append('idCardFileName', kyc.idCardFileName);
+      }
+      if (kyc.passportFileName) {
+        formData.append('passportFileName', kyc.passportFileName);
+      }
 
       const response = await fetch('/api/kyc/reapply', {
         method: 'PUT',
         body: formData,
       });
+
+      const data = await response.json();
 
       if (response.ok) {
         setIsSuccess(true);
@@ -85,29 +143,38 @@ const ReapplyPage = () => {
           router.push('/dashboard');
         }, 2000);
       } else {
-        const errorData = await response.json();
-        console.error('Reapplication failed:', errorData);
-        alert(`Reapplication failed: ${errorData.error || 'Unknown error'}`);
+        setError(data.error || 'Failed to update KYC. Please try again.');
       }
     } catch (error) {
       console.error('Error submitting reapplication:', error);
-      alert('Error submitting reapplication. Please try again.');
+      setError('An error occurred while submitting the form. Please try again.');
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: 'idCard' | 'passport') => {
-    if (e.target.files && e.target.files[0]) {
-      setKyc({ ...kyc, [field]: e.target.files[0] });
     }
   };
 
   if (loading) {
     return (
       <div className="dashboard">
-        <div className="loading">Loading your KYC information...</div>
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading your KYC information...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && error.includes('No existing KYC record')) {
+    return (
+      <div className="dashboard">
+        <div className="error-container">
+          <FiAlertCircle size={48} className="error-icon" />
+          <h2>No KYC Record Found</h2>
+          <p>{error}</p>
+          <Link href="/kyc" className="primary-button">
+            Complete New KYC Application
+          </Link>
+        </div>
       </div>
     );
   }
@@ -131,9 +198,16 @@ const ReapplyPage = () => {
         </div>
       </div>
 
+      {error && (
+        <div className="error-banner">
+          <FiAlertCircle />
+          <p>{error}</p>
+        </div>
+      )}
+
       <div className="transfer_p">
         <div className="back-button">
-          <Link href="/dashboard">
+          <Link href="/dashboard" className="back-link">
             <FiArrowLeft /> Back to Dashboard
           </Link>
         </div>
@@ -151,20 +225,24 @@ const ReapplyPage = () => {
                   <h3>First Name *</h3>
                   <input 
                     type="text" 
-                    onChange={(e) => setKyc({...kyc, firstName: e.target.value})} 
+                    name="firstName"
+                    onChange={handleInputChange} 
                     value={kyc.firstName} 
                     placeholder='John' 
                     required 
+                    disabled={isSubmitting}
                   />
                 </div>
                 <div className="receipt-content">
                   <h3>Last Name *</h3>
                   <input 
                     type="text" 
-                    onChange={(e) => setKyc({...kyc, lastName: e.target.value})} 
+                    name="lastName"
+                    onChange={handleInputChange} 
                     value={kyc.lastName} 
                     placeholder='Doe' 
                     required 
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
@@ -174,20 +252,24 @@ const ReapplyPage = () => {
                   <h3>Country *</h3>
                   <input 
                     type="text" 
-                    onChange={(e) => setKyc({...kyc, country: e.target.value})} 
+                    name="country"
+                    onChange={handleInputChange} 
                     value={kyc.country}
                     placeholder='Enter Country...' 
                     required 
+                    disabled={isSubmitting}
                   />
                 </div>
                 <div className="receipt-content">
                   <h3>State *</h3>
                   <input 
                     type="text" 
-                    onChange={(e) => setKyc({...kyc, state: e.target.value})} 
+                    name="state"
+                    onChange={handleInputChange} 
                     value={kyc.state}
                     placeholder='Enter State...' 
                     required 
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
@@ -197,35 +279,45 @@ const ReapplyPage = () => {
                   <h3>Email *</h3>
                   <input 
                     type="email" 
-                    onChange={(e) => setKyc({...kyc, email: e.target.value})} 
+                    name="email"
+                    onChange={handleInputChange} 
                     value={kyc.email}
                     placeholder='your.email@example.com' 
                     required 
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
               
               <div className="receipt">
                 <div className="receipt-content">
-                  <h3>ID Card {existingKyc?.idCard ? '(Update if needed)' : '*'}</h3>
+                  <h3>ID Card (Update if needed - JPEG, PNG, PDF - Max 10MB)</h3>
                   <input 
                     type="file" 
-                    onChange={(e) => handleFileChange(e, 'idCard')}
-                    accept="image/*,.pdf"
+                    name="idCardFileName"
+                    onChange={handleFileChange}
+                    accept=".jpg,.jpeg,.png,.pdf"
+                    disabled={isSubmitting}
                   />
                 </div>
                 <div className="receipt-content">
-                  <h3>Passport {existingKyc?.passport ? '(Update if needed)' : '*'}</h3>
+                  <h3>Passport (Update if needed - JPEG, PNG, PDF - Max 10MB)</h3>
                   <input 
                     type="file" 
-                    onChange={(e) => handleFileChange(e, 'passport')}
-                    accept="image/*,.pdf"
+                    name="passportFileName"
+                    onChange={handleFileChange}
+                    accept=".jpg,.jpeg,.png,.pdf"
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
             </div>
             
-            <button type="submit" disabled={isSubmitting}>
+            <button 
+              type="submit" 
+              disabled={isSubmitting}
+              className={isSubmitting ? 'submitting' : ''}
+            >
               {isSubmitting ? 'Updating...' : 'Update KYC Information'}
             </button>
           </div>
@@ -235,4 +327,4 @@ const ReapplyPage = () => {
   )
 }
 
-export default ReapplyPage
+export default ReapplyPage;

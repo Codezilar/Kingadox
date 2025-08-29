@@ -24,20 +24,23 @@ const Page = () => {
   const router = useRouter();
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { user, isLoaded } = useUser();
   const userId = user?.id || null;
 
   // Generate a random 10-digit account number
-  const min = 1000000000;
-  const max = 9999999999;
-  const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
-  
+  const generateAccountNumber = () => {
+    const min = 1000000000;
+    const max = 9999999999;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
   const [kyc, setKyc] = useState<KycData>({
     clerkId: userId,
     firstName: '',
     lastName: '',
     email: '',
-    account: randomNum.toString(),
+    account: generateAccountNumber().toString(),
     approve: '0',
     balance: '0',
     country: '',
@@ -62,12 +65,28 @@ const Page = () => {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setKyc(prev => ({ ...prev, [name]: value }));
+    setError(null);
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
     if (files && files[0]) {
-      setKyc(prev => ({ ...prev, [name]: files[0] }));
+      const file = files[0];
+      const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+      const maxSize = 10 * 1024 * 1024; // 10MB
+
+      if (!validTypes.includes(file.type)) {
+        setError('Please upload JPEG, PNG, or PDF files only');
+        return;
+      }
+
+      if (file.size > maxSize) {
+        setError('File size must be less than 10MB');
+        return;
+      }
+
+      setKyc(prev => ({ ...prev, [name]: file }));
+      setError(null);
     }
   };
 
@@ -76,11 +95,17 @@ const Page = () => {
     
     // Validate required files
     if (!kyc.idCardFileName || !kyc.passportFileName) {
-      alert('Please upload both ID card and passport');
+      setError('Please upload both ID card and passport');
+      return;
+    }
+
+    if (!kyc.country || !kyc.state) {
+      setError('Please fill in all required fields');
       return;
     }
     
     setIsSubmitting(true);
+    setError(null);
 
     try {
       const formData = new FormData();
@@ -101,23 +126,23 @@ const Page = () => {
         body: formData,
       });
 
+      const data = await response.json();
+
       if (response.ok) {
         setIsSuccess(true);
         setTimeout(() => {
           router.push('/success');
         }, 2000);
       } else {
-        const errorData = await response.json();
-        alert(`Error: ${errorData.error || 'Failed to submit KYC'}`);
+        setError(data.error || 'Failed to submit KYC. Please try again.');
       }
     } catch (error) {
       console.error('Submission error:', error);
-      alert('An error occurred while submitting the form');
+      setError('An error occurred while submitting the form. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
-
 
   if (isSuccess) {
     return <OnboradingSuccess />;
@@ -137,6 +162,13 @@ const Page = () => {
           <Image src={'/de.webp'} alt='Decoration' className='kyc-bot' height={100} width={100} />
         </div>
       </div>
+      
+      {error && (
+        <div className="error-banner">
+          <p>{error}</p>
+        </div>
+      )}
+
       <div className="transfer_p">
         <form onSubmit={createUser} className="transfer_p-container">
           <div className="transfer_p-content">
@@ -155,6 +187,7 @@ const Page = () => {
                     value={kyc.firstName} 
                     placeholder='John' 
                     required 
+                    disabled={isSubmitting}
                   />
                 </div>
                 <div className="receipt-content">
@@ -166,6 +199,7 @@ const Page = () => {
                     value={kyc.lastName} 
                     placeholder='Doe' 
                     required 
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
@@ -179,6 +213,7 @@ const Page = () => {
                     value={kyc.country} 
                     placeholder='Enter Country...' 
                     required 
+                    disabled={isSubmitting}
                   />
                 </div>
                 <div className="receipt-content">
@@ -190,6 +225,7 @@ const Page = () => {
                     value={kyc.state} 
                     placeholder='Enter State...' 
                     required 
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
@@ -203,34 +239,41 @@ const Page = () => {
                     value={kyc.email} 
                     placeholder='Enter Email...' 
                     required 
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
               <div className="receipt">
                 <div className="receipt-content">
-                  <h3>ID Card *</h3>
+                  <h3>ID Card * (JPEG, PNG, PDF - Max 10MB)</h3>
                   <input 
                     type="file" 
                     name="idCardFileName"
                     onChange={handleFileChange} 
-                    accept="image/*,.pdf"
+                    accept=".jpg,.jpeg,.png,.pdf"
                     required 
+                    disabled={isSubmitting}
                   />
                 </div>
                 <div className="receipt-content">
-                  <h3>Passport *</h3>
+                  <h3>Passport * (JPEG, PNG, PDF - Max 10MB)</h3>
                   <input 
                     type="file" 
                     name="passportFileName"
                     onChange={handleFileChange} 
-                    accept="image/*,.pdf"
+                    accept=".jpg,.jpeg,.png,.pdf"
                     required 
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
             </div>
-            <button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Submitting...' : 'Submit'}
+            <button 
+              type="submit" 
+              disabled={isSubmitting}
+              className={isSubmitting ? 'submitting' : ''}
+            >
+              {isSubmitting ? 'Submitting...' : 'Submit KYC'}
             </button>
           </div>
         </form>
