@@ -100,9 +100,8 @@ export const deleteFromCloudinary = async (publicId: string | null): Promise<{ r
 
     console.log(`🗑️ Attempting to delete from Cloudinary: ${publicId}`);
     
-    const result = await cloudinary.uploader.destroy(publicId, {
-      timeout: 15000
-    });
+    // Remove the timeout option - it's not valid for destroy method
+    const result = await cloudinary.uploader.destroy(publicId);
     
     console.log(`🗑️ Deletion result for ${publicId}:`, result.result);
     
