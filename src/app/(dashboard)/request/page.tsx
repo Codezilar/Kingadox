@@ -139,7 +139,8 @@ const page = () => {
     const statusMap = {
       '0': { text: 'Pending', color: 'bg-yellow-100 text-yellow-800' },
       '1': { text: 'Approved', color: 'bg-green-100 text-green-800' },
-      '2': { text: 'Rejected', color: 'bg-red-100 text-red-800' }
+      '2': { text: 'Rejected', color: 'bg-red-100 text-red-800' },
+      '3': { text: 'Approved', color: 'bg-green-100 text-green-800' }
     };
     
     const statusInfo = statusMap[status as keyof typeof statusMap] || statusMap['0'];
@@ -162,7 +163,7 @@ const page = () => {
 
   return (
     <div className="dashboard">
-      <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-gray-900 p-10">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">

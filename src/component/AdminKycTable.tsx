@@ -90,6 +90,8 @@ export default function AdminKycTable() {
         return <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded cursor-pointer">Approved</span>;
       case '2':
         return <span className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded cursor-pointer">Rejected</span>;
+      // case '3':
+      //   return <span className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded cursor-pointer">Approved</span>;
       default:
         return <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">Pending</span>;
     }
@@ -147,7 +149,7 @@ export default function AdminKycTable() {
             </thead>
             <tbody>
                 {kycData.map((kyc) => (
-                <tr key={kyc._id} className="bg-grey-900 border-b hover:bg-gray-700">
+                <tr key={kyc.account} className="bg-grey-900 border-b hover:bg-gray-700">
                     <td className="px-6 py-4">
                     <div className="font-medium text-white">
                         {kyc.firstName} {kyc.lastName}

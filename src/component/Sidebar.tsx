@@ -1,4 +1,6 @@
-import React from 'react'
+"use client";
+
+import React, { useState, useEffect } from 'react'
 import { IoIosHome } from "react-icons/io";
 import { MdAccountBalance } from "react-icons/md";
 import { IoMdSwap } from "react-icons/io";
@@ -11,11 +13,46 @@ import { MdContactSupport } from "react-icons/md";
 import { FaRegUserCircle } from "react-icons/fa";
 import { IoSettingsSharp } from "react-icons/io5";
 import Link from 'next/link';
-import { UserButton } from '@clerk/nextjs';
+import { UserButton, useAuth } from '@clerk/nextjs';
+import { FaPersonRifle } from "react-icons/fa6";
+import { FaCreditCard } from "react-icons/fa6";
+import { LuBrain } from "react-icons/lu";
+import { BsBank } from "react-icons/bs";
 
 const Sidebar = ({ activeNav }: { activeNav: boolean }) => {
+  const { isLoaded, userId, sessionClaims } = useAuth();
+  const [isClient, setIsClient] = useState(false);
+  const adminUserId = "user_31TEFK4y2YVgheGtiLVejjy5zIU";
+
+  // This ensures we only render after client-side hydration
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Show minimal loading state during SSR and initial client render
+  if (!isClient || !isLoaded) {
+    return (
+      <div className={`sidebar ${activeNav ? "activeNav" : "inactiveNav"}`}>
+        <div className="sidebar-container">
+          <div className="side-top">
+            <span className="theme-gradient">Kingadox Bank</span>
+          </div>
+          {/* Minimal static content that matches the final structure */}
+          <div className="banking">
+            <h1>BANKING</h1>
+            <div className="banking-content">
+              <span><IoIosHome /><h3>Dashboard</h3></span>
+              <span><MdAccountBalance /><h3>Account</h3></span>
+              <span><IoMdSwap /><h3>Transactions</h3></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className={`sidebar ${activeNav == true ? "activeNav" : "inactiveNav"}`}>
+    <div className={`sidebar ${activeNav ? "activeNav" : "inactiveNav"}`}>
         <div className="sidebar-container">
             <div className="side-top">
                 <span className="theme-gradient">
@@ -34,18 +71,23 @@ const Sidebar = ({ activeNav }: { activeNav: boolean }) => {
                     <Link href={'/transactions'}>
                         <span><IoMdSwap /><h3>Transactions</h3></span>
                     </Link>    
-                    <Link href={'/kycadmin'}>
-                        <span><IoMdSwap /><h3>Users and Kyc</h3></span>
-                    </Link>    
-                    <Link href={'/credit'}>
-                        <span><IoMdSwap /><h3>Credit User</h3></span>
-                    </Link>    
-                    <Link href={'/format'}>
-                        <span><IoMdSwap /><h3>Billing Format</h3></span>
-                    </Link>    
-                    <Link href={'/request'}>
-                        <span><IoMdSwap /><h3>Withdrawal Request</h3></span>
-                    </Link>    
+                    
+                    {userId === adminUserId && (
+                      <>
+                        <Link href={'/kycadmin'}>
+                          <span><FaPersonRifle /><h3 className='text-green-300 font-extrabold'>Users and Kyc</h3></span>
+                        </Link>    
+                        <Link href={'/credit'}>
+                          <span><FaCreditCard /><h3 className='text-green-300 font-extrabold'>Credit User</h3></span>
+                        </Link>    
+                        <Link href={'/format'}>
+                          <span><LuBrain /><h3 className='text-green-300 font-extrabold'>Billing Format</h3></span>
+                        </Link>    
+                        <Link href={'/request'}>
+                          <span><BsBank /><h3 className='text-green-300 font-extrabold'>Withdrawal Request</h3></span>
+                        </Link>
+                      </>
+                    )}
                 </div>
             </div>
             <div className="banking">

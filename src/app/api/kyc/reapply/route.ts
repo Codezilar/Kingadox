@@ -2,8 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '@/lib/mongodb';
 import Kyc from '@/models/kyc';
-import { writeFile, mkdir, unlink } from 'fs/promises';
-import path from 'path';
+import { deleteFromCloudinary, uploadToCloudinary, getPublicIdFromUrl } from '@/lib/cloudinary';
 
 export async function PUT(request: NextRequest) {
   try {
@@ -38,8 +37,8 @@ export async function PUT(request: NextRequest) {
     }
 
     // Reset approval status when reapplying
-    existingKyc.approve = 0;
-    existingKyc.applied = 1;
+    existingKyc.approve = "0";
+    existingKyc.applied = "1";
     existingKyc.firstName = firstName;
     existingKyc.lastName = lastName;
     existingKyc.email = email;
@@ -47,48 +46,74 @@ export async function PUT(request: NextRequest) {
     existingKyc.state = state;
 
     // Handle file uploads if new files are provided
-    const uploadDir = path.join(process.cwd(), 'public/uploads');
-    
     if (idCard && idCard.size > 0) {
-      // Remove old ID card file if it exists
+      // Remove old ID card file from Cloudinary if it exists
       if (existingKyc.idCard) {
-        const oldIdCardPath = path.join(process.cwd(), 'public', existingKyc.idCard);
-        try {
-          await unlink(oldIdCardPath);
-        } catch (error) {
-          console.warn('Could not delete old ID card file:', error);
+        const publicId = getPublicIdFromUrl(existingKyc.idCard);
+        if (publicId) {
+          try {
+            await deleteFromCloudinary(publicId);
+          } catch (error) {
+            console.warn('Could not delete old ID card file from Cloudinary:', error);
+          }
         }
       }
       
       // Process new ID card
-      await mkdir(uploadDir, { recursive: true });
       const idCardBuffer = Buffer.from(await idCard.arrayBuffer());
       const idCardSanitized = idCard.name.replace(/[^a-zA-Z0-9._-]/g, '_');
       const idCardFilename = `idcard_${Date.now()}_${idCardSanitized}`;
-      const idCardPath = path.join(uploadDir, idCardFilename);
-      await writeFile(idCardPath, idCardBuffer);
-      existingKyc.idCard = `/uploads/${idCardFilename}`;
+      
+      try {
+        const idCardUpload = await uploadToCloudinary(
+          idCardBuffer, 
+          'id_cards', 
+          idCardFilename
+        ) as any;
+        
+        existingKyc.idCard = idCardUpload.secure_url;
+      } catch (uploadError) {
+        console.error('Error uploading ID card to Cloudinary:', uploadError);
+        return NextResponse.json(
+          { error: "Failed to upload ID card" }, 
+          { status: 500 }
+        );
+      }
     }
 
     if (passport && passport.size > 0) {
-      // Remove old passport file if it exists
+      // Remove old passport file from Cloudinary if it exists
       if (existingKyc.passport) {
-        const oldPassportPath = path.join(process.cwd(), 'public', existingKyc.passport);
-        try {
-          await unlink(oldPassportPath);
-        } catch (error) {
-          console.warn('Could not delete old passport file:', error);
+        const publicId = getPublicIdFromUrl(existingKyc.passport);
+        if (publicId) {
+          try {
+            await deleteFromCloudinary(publicId);
+          } catch (error) {
+            console.warn('Could not delete old passport file from Cloudinary:', error);
+          }
         }
       }
       
       // Process new passport
-      await mkdir(uploadDir, { recursive: true });
       const passportBuffer = Buffer.from(await passport.arrayBuffer());
       const passportSanitized = passport.name.replace(/[^a-zA-Z0-9._-]/g, '_');
       const passportFilename = `passport_${Date.now()}_${passportSanitized}`;
-      const passportPath = path.join(uploadDir, passportFilename);
-      await writeFile(passportPath, passportBuffer);
-      existingKyc.passport = `/uploads/${passportFilename}`;
+      
+      try {
+        const passportUpload = await uploadToCloudinary(
+          passportBuffer, 
+          'passports', 
+          passportFilename
+        ) as any;
+        
+        existingKyc.passport = passportUpload.secure_url;
+      } catch (uploadError) {
+        console.error('Error uploading passport to Cloudinary:', uploadError);
+        return NextResponse.json(
+          { error: "Failed to upload passport" }, 
+          { status: 500 }
+        );
+      }
     }
 
     // Save updated KYC record
@@ -99,9 +124,9 @@ export async function PUT(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
+    console.error('KYC reapplication error:', error);
+    
     if (error instanceof Error && 'name' in error && error.name === 'ValidationError') {
-      console.error('KYC reapplication error:', error);
-
       // Type assertion for MongoDB validation error
       const mongoError = error as any;
       
