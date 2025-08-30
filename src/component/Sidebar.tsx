@@ -22,7 +22,7 @@ import { BsBank } from "react-icons/bs";
 const Sidebar = ({ activeNav }: { activeNav: boolean }) => {
   const { isLoaded, userId, sessionClaims } = useAuth();
   const [isClient, setIsClient] = useState(false);
-  const adminUserId = "user_31TEFK4y2YVgheGtiLVejjy5zIU";
+  const adminUserId = "user_31ylsJLIl7GOHmpY8SkwQZqG1YZ";
 
   // This ensures we only render after client-side hydration
   useEffect(() => {
