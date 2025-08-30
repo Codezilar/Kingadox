@@ -123,7 +123,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Error fetching withdrawal data:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch withdrawal data' },
+      { error: 'Complete KYC!' },
       { status: 500 }
     );
   }

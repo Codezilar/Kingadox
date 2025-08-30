@@ -1,9 +1,12 @@
+"use client"
 import React from 'react'
 import { FaRegUser } from "react-icons/fa";
 import { FaEnvelope } from "react-icons/fa";
-
+import { useForm, ValidationError } from '@formspree/react';
 
 const page = () => {
+    const [state, handleSubmit] = useForm("mrbaqqbo");
+
   return (
     <div className='dashboard support-form'>
       <div className="support">
@@ -12,47 +15,48 @@ const page = () => {
             <h1>Submit a Support Ticket</h1>
             <p>Fill out the form below to create a support ticket.</p>
           </div>
-          <form action="">
+          <form action="https://formspree.io/f/mrbaqqbo"  // Demo Formspree ID - replace with yours
+        method="POST" >
               <div className="suppot-info">
                 <div className="support-cred">
                   <div className="suport-data">
                     <h2>Full Name</h2>
                     <span>
                       <FaRegUser />
-                      <input type="text" placeholder='John Doe' name="" id="" />
+                      <input type="text" placeholder='John Doe' name="fullName" id="" />
                     </span>
                   </div>
                   <div className="suport-data">
                     <h2>Full Name</h2>
                     <span>
                       <FaEnvelope />
-                      <input type="email" placeholder='john@example.com' name="" id="" />
+                      <input type="email" placeholder='john@example.com' name="email" id="" />
                     </span>
                   </div>
                 </div>
                 <div className="suport-data">
                   <h2>Issue Category</h2>
                   <span>
-                    <select name="" id="">
-                      <option value="">Account Issues</option>
-                      <option value="">Transfer Problem</option>
-                      <option value="">Card Services</option>
-                      <option value="">Login Troubles</option>
-                      <option value="">Other</option>
+                    <select name="Issue" id="">
+                      <option value="Account Issues">Account Issues</option>
+                      <option value="Transfer Problem">Transfer Problem</option>
+                      <option value="Card Services">Card Services</option>
+                      <option value="Login Troubles">Login Troubles</option>
+                      <option value="Other">Other</option>
                     </select>  
                   </span>
                 </div>
                 <div className="suport-data">
                   <h2>Subject</h2>
                   <span>
-                    <input type="text" placeholder='Brief description of your issue...' name="" id="" />
+                    <input type="text" placeholder='Brief description of your issue...' name="subject" id="" />
                   </span>
                 </div>
                 <div className="suport-data">
                   <h2>Message</h2>
-                  <textarea name="" placeholder='Please provide ddetails about your issues...' id=""></textarea>
+                  <textarea name="message" placeholder='Please provide ddetails about your issues...' id=""></textarea>
                 </div>
-                <button>Submit Ticket</button>
+                <button type="submit" disabled={state.submitting}>Submit Ticket</button>
               </div>
           </form>
         </div>
