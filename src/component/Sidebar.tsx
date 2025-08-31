@@ -27,8 +27,7 @@ type SidebarProps = {
 const Sidebar = ({ activeNav, toggle }: SidebarProps) => {
   const { isLoaded, userId, sessionClaims } = useAuth();
   const [isClient, setIsClient] = useState(false);
-  const adminUserId = "user_31ylsJLIl7GOHmpY8SkwQZqG1YZ";
-  const adminUserId2 = "user_31TEFK4y2YVgheGtiLVejjy5zIU";
+  const adminUserId = "user_31TEFK4y2YVgheGtiLVejjy5zIU";
 
   // This ensures we only render after client-side hydration
   useEffect(() => {
@@ -78,7 +77,7 @@ const Sidebar = ({ activeNav, toggle }: SidebarProps) => {
                         <span onClick={toggle}><IoMdSwap /><h3>Transactions</h3></span>
                     </Link>    
                     
-                    {userId === adminUserId || adminUserId2 && (
+                    {userId === adminUserId && (
                       <>
                         <Link href={'/kycadmin'}>
                           <span onClick={toggle}><FaPersonRifle /><h3 className='text-green-300 font-extrabold'>Users and Kyc</h3></span>
