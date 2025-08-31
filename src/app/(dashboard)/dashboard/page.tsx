@@ -78,22 +78,23 @@ const Page = () => {
   return (
     <div className='dashboard'>
         {/* Conditionally render based on withdrawal approval status */}
-        {withdrawal && withdrawal.approve === '0' && (
-            <div className="tf_Information">
-                <h2>{formats[0]?.title || "Default Title"}</h2>
-                <ul>
-                    <li>{formats[0]?.description || "Default description"}</li>
-                </ul>
-            </div>
-        )}
         
-        {withdrawal && withdrawal.approve === '1' && formats.length > 1 && (
+        {withdrawal && withdrawal.approve === '0' && formats.length > 1 && (
             <div className="tf_Information">
                 <h2>{formats[1]?.title || "Default Title"}</h2>
                 <ul>
                     <li>{formats[1]?.description || "Default description"}</li>
                 </ul>
                 <OTPVerification clerkId={userId as string} />
+            </div>
+        )}
+
+        {withdrawal && withdrawal.approve === '1' && (
+            <div className="tf_Information">
+                <h2>{formats[0]?.title || "Default Title"}</h2>
+                <ul>
+                    <li>{formats[0]?.description || "Default description"}</li>
+                </ul>
             </div>
         )}
 
