@@ -3,6 +3,9 @@ import React from 'react'
 import { FaRegUser } from "react-icons/fa";
 import { FaEnvelope } from "react-icons/fa";
 import { useForm, ValidationError } from '@formspree/react';
+import { SiWhatsapp } from "react-icons/si";
+import { TfiHandPointDown } from "react-icons/tfi";
+import Link from 'next/link';
 
 const page = () => {
     const [state, handleSubmit] = useForm("mrbaqqbo");
@@ -23,14 +26,14 @@ const page = () => {
                     <h2>Full Name</h2>
                     <span>
                       <FaRegUser />
-                      <input type="text" placeholder='John Doe' name="fullName" id="" />
+                      <input type="text" required placeholder='John Doe' name="fullName" id="" />
                     </span>
                   </div>
                   <div className="suport-data">
                     <h2>Full Name</h2>
                     <span>
                       <FaEnvelope />
-                      <input type="email" placeholder='john@example.com' name="email" id="" />
+                      <input type="email" required placeholder='john@example.com' name="email" id="" />
                     </span>
                   </div>
                 </div>
@@ -49,16 +52,26 @@ const page = () => {
                 <div className="suport-data">
                   <h2>Subject</h2>
                   <span>
-                    <input type="text" placeholder='Brief description of your issue...' name="subject" id="" />
+                    <input type="text" required placeholder='Brief description of your issue...' name="subject" id="" />
                   </span>
                 </div>
                 <div className="suport-data">
                   <h2>Message</h2>
-                  <textarea name="message" placeholder='Please provide ddetails about your issues...' id=""></textarea>
+                  <textarea name="message" required placeholder='Please provide ddetails about your issues...' id=""></textarea>
                 </div>
                 <button type="submit" disabled={state.submitting}>Submit Ticket</button>
+                <h2 className='text-center w-full text-xl gap-2.5 flex justify-center items-center font-extrabold text-blue-300'>
+                  <p>Or Contact Via</p>
+                  <p className='flex'><TfiHandPointDown />!</p>
+                </h2>
               </div>
           </form>
+          <Link href={"https://wa.me/+13204458049"} target="_blank">
+            <button className='bg-blue-400 flex w-full h-[5rem]  cursor-pointer justify-center items-center gap-3 rounded-[10px]'>
+              <p className='font-extrabold'>WhatsApp</p>
+              <SiWhatsapp className='text-3xl' />
+            </button>
+          </Link>
         </div>
       </div>
     </div>
