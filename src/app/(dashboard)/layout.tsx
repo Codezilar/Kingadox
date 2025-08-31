@@ -22,7 +22,7 @@ const RootLayout = ({children}:{children: ReactNode}) => {
   }
   return (
     <main className="dasss">
-        <Sidebar activeNav={activeNav} />
+        <Sidebar activeNav={activeNav} toggle={toggle} />
         <div className="dass-right">
           <div className="dash-nav">
             <UserButton />
