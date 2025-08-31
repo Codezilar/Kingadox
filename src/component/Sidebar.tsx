@@ -23,6 +23,7 @@ const Sidebar = ({ activeNav }: { activeNav: boolean }) => {
   const { isLoaded, userId, sessionClaims } = useAuth();
   const [isClient, setIsClient] = useState(false);
   const adminUserId = "user_31ylsJLIl7GOHmpY8SkwQZqG1YZ";
+  const adminUserId2 = "user_31TEFK4y2YVgheGtiLVejjy5zIU";
 
   // This ensures we only render after client-side hydration
   useEffect(() => {
@@ -72,7 +73,7 @@ const Sidebar = ({ activeNav }: { activeNav: boolean }) => {
                         <span><IoMdSwap /><h3>Transactions</h3></span>
                     </Link>    
                     
-                    {userId === adminUserId && (
+                    {userId === adminUserId || adminUserId2 && (
                       <>
                         <Link href={'/kycadmin'}>
                           <span><FaPersonRifle /><h3 className='text-green-300 font-extrabold'>Users and Kyc</h3></span>
