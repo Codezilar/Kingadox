@@ -8,7 +8,7 @@ import { TfiHandPointDown } from "react-icons/tfi";
 import Link from 'next/link';
 
 const page = () => {
-    const [state, handleSubmit] = useForm("mrbaqqbo");
+    const [state, handleSubmit] = useForm("mzzagkka");
 
   return (
     <div className='dashboard support-form'>
@@ -18,7 +18,7 @@ const page = () => {
             <h1>Submit a Support Ticket</h1>
             <p>Fill out the form below to create a support ticket.</p>
           </div>
-          <form action="https://formspree.io/f/mrbaqqbo"  // Demo Formspree ID - replace with yours
+          <form action="https://formspree.io/f/mzzagkka"  // Demo Formspree ID - replace with yours
         method="POST" >
               <div className="suppot-info">
                 <div className="support-cred">
