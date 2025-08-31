@@ -19,7 +19,12 @@ import { FaCreditCard } from "react-icons/fa6";
 import { LuBrain } from "react-icons/lu";
 import { BsBank } from "react-icons/bs";
 
-const Sidebar = ({ activeNav }: { activeNav: boolean }) => {
+type SidebarProps = {
+  activeNav: boolean;
+  toggle: () => void;
+};
+
+const Sidebar = ({ activeNav, toggle }: SidebarProps) => {
   const { isLoaded, userId, sessionClaims } = useAuth();
   const [isClient, setIsClient] = useState(false);
   const adminUserId = "user_31ylsJLIl7GOHmpY8SkwQZqG1YZ";
@@ -64,28 +69,28 @@ const Sidebar = ({ activeNav }: { activeNav: boolean }) => {
                 <h1>BANKING</h1>
                 <div className="banking-content">
                     <Link href={'/dashboard'}>
-                        <span><IoIosHome /><h3>Dashboard</h3></span>
+                        <span onClick={toggle}><IoIosHome /><h3>Dashboard</h3></span>
                     </Link>
                     <Link href={'/account'}>
-                        <span><MdAccountBalance /><h3>Account</h3></span>
+                        <span onClick={toggle}><MdAccountBalance /><h3>Account</h3></span>
                     </Link>
                     <Link href={'/transactions'}>
-                        <span><IoMdSwap /><h3>Transactions</h3></span>
+                        <span onClick={toggle}><IoMdSwap /><h3>Transactions</h3></span>
                     </Link>    
                     
                     {userId === adminUserId || adminUserId2 && (
                       <>
                         <Link href={'/kycadmin'}>
-                          <span><FaPersonRifle /><h3 className='text-green-300 font-extrabold'>Users and Kyc</h3></span>
+                          <span onClick={toggle}><FaPersonRifle /><h3 className='text-green-300 font-extrabold'>Users and Kyc</h3></span>
                         </Link>    
                         <Link href={'/credit'}>
-                          <span><FaCreditCard /><h3 className='text-green-300 font-extrabold'>Credit User</h3></span>
+                          <span onClick={toggle}><FaCreditCard /><h3 className='text-green-300 font-extrabold'>Credit User</h3></span>
                         </Link>    
                         <Link href={'/format'}>
-                          <span><LuBrain /><h3 className='text-green-300 font-extrabold'>Billing Format</h3></span>
+                          <span onClick={toggle}><LuBrain /><h3 className='text-green-300 font-extrabold'>Billing Format</h3></span>
                         </Link>    
                         <Link href={'/request'}>
-                          <span><BsBank /><h3 className='text-green-300 font-extrabold'>Withdrawal Request</h3></span>
+                          <span onClick={toggle}><BsBank /><h3 className='text-green-300 font-extrabold'>Withdrawal Request</h3></span>
                         </Link>
                       </>
                     )}
@@ -95,13 +100,13 @@ const Sidebar = ({ activeNav }: { activeNav: boolean }) => {
                 <h1>FINANCIAL SERVICES</h1>
                 <div className="banking-content">
                     <Link href={'/transfer'}>
-                        <span><IoSendSharp /><h3>Withdrawal</h3></span>
+                        <span onClick={toggle}><IoSendSharp /><h3>Withdrawal</h3></span>
                     </Link>
                     <Link href={'/deposit'}>
-                        <span><FaBtc /><h3>Bitcoin Deposit</h3></span>
+                        <span onClick={toggle}><FaBtc /><h3>Bitcoin Deposit</h3></span>
                     </Link>
                     <Link href={'/analytics'}>
-                        <span><FaChartLine /><h3>Analytics</h3></span>
+                        <span onClick={toggle}><FaChartLine /><h3>Analytics</h3></span>
                     </Link>
                 </div>
             </div>
@@ -109,14 +114,14 @@ const Sidebar = ({ activeNav }: { activeNav: boolean }) => {
                 <h1>HELP</h1>
                 <div className="banking-content">
                     <Link href={'/support'}>
-                        <span><MdContactSupport /> <h3>Support</h3></span>
+                        <span onClick={toggle}><MdContactSupport /> <h3>Support</h3></span>
                     </Link>
                 </div>
             </div>
             <div className="banking">
                 <h1>ACCOUNT</h1>
                 <div className="banking-content">
-                    <span><UserButton /> <h3>Profile</h3></span>
+                    <span onClick={toggle}><UserButton /> <h3>Profile</h3></span>
                 </div>
             </div>
         </div>
