@@ -132,13 +132,24 @@ const Page = () => {
                         <h3>Recent Transactions</h3>
                         <Link href={'/'}>View All</Link>
                     </div>
-                    <div className="transaction-content">
-                        <Image src={'/trans.webp'} height={150} width={150} alt='kjh' />
-                        <h3>No transactions yet</h3>
-                        <p>
-                            Your recent transaction history will appear here once you start making transactions.
-                        </p>
-                    </div>
+
+                    {withdrawal && withdrawal.approve === '0' ? (
+                        <div className="transaction-content">
+                            <Image src={'/trans.webp'} height={150} width={150} alt='kjh' />
+                            <h3>No transactions yet</h3>
+                            <p>
+                                Your recent transaction history will appear here once you start making transactions.
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="transaction-content">
+                            <Image src={'/trans.webp'} height={150} width={150} alt='kjh' />
+                            <h3>{withdrawal && withdrawal.approve === '2' ? ("🚫⚠️ Withdrawal Rejected") : ("🕒 Pending, Transaction processing!")}</h3>
+                            <p>
+                                {withdrawal && withdrawal.approve === '2' ? ("Your withdrawal request has been rejected. Please try again.") : ("Your recent transaction is currently processing. We’re currently processing your transaction.")}
+                            </p>
+                        </div>
+                    )}
                 </div>
                 <div className="transaction tran_btc">
                     <h1>Charges Fee Payment</h1>
