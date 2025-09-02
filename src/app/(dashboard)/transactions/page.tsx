@@ -26,7 +26,7 @@ const page = () => {
                     </div>
                     <div className="transaction-box">
                         <Image src={'/trans.webp'} height={150} width={150} alt='kjh' />
-                        <h3>No transactions yet</h3>
+                        <h3>No transaction completed yet</h3>
                         <p>Your transaction history will appear here once you start making transfers and payments.</p>
                         <div className="transfers-wrap">
                             <div className="transfer-money">
