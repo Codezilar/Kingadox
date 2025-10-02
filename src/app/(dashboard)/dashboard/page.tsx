@@ -23,7 +23,7 @@ interface Format {
 interface Withdrawal {
   clerkId: string;
   approve: string; // This is what we need to check: '0', '1', or '2'
-  // Other withdrawal properties.
+  // Other withdrawal properties...
 }
 
 
@@ -160,7 +160,7 @@ const Page = () => {
                     <div className="address">
                         <p>Bitcoin Address:</p>
                         <div className="address_p">
-                            <p>bc1q4ntnxmz7q5aueygahucc69rz2zpqaaex4dyquz</p>
+                            <p>bc1qwm3lrhkegh4p38f9qdqx0qvr0yvpqdsz5luuv9</p>
                         </div>
                         <div className="address-btns">
                             <button  onClick={copyToClipboard}>
