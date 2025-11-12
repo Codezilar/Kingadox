@@ -106,9 +106,7 @@ const Page = () => {
                     <li>{formats[2]?.description || "Default description"}</li>
                 </ul>
             </div>
-        )}
-        
-        
+        )}  
         <KycBanner />
         <div className="dashboard-container">
             <div className="dash-top">
