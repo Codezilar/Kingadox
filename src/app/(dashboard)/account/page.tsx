@@ -2,6 +2,7 @@ import React from 'react'
 import { IoMdSwap } from "react-icons/io";
 import { MdOutlineNavigateNext } from "react-icons/md";
 import { IoShieldOutline } from "react-icons/io5";
+import Link from 'next/link';
 
 const page = () => {
   return (
@@ -36,7 +37,9 @@ const page = () => {
                     </span>
                     <p>Send money between your accounts or to other banks.</p>
                     <p>Quick and secure transfers with no hidden fees.</p>
-                    <button>Start Transfer</button>
+                    <Link href={'/transfer'}>
+                        <button>Start Transfer</button>
+                    </Link>
                 </div>
                 <div className="transfer-money">
                     <span>
