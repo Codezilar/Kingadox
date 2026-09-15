@@ -347,7 +347,7 @@ async function sendCustomerConfirmation(formData: MortgageFormData): Promise<Ema
               </div>
               <div class="footer">
                 <p>Kingadox Bank & Trust</p>
-                <p>Customer Service: +18632811748</p>
+                <p>Customer Service: +1 (555) 123-KING</p>
                 <p>© 2024 Kingadox Bank. All rights reserved.</p>
               </div>
             </div>
